@@ -57,7 +57,7 @@ class _MyAppState extends State<MyApp> {
     this.questions = questions;
   }
 
-  String title = 'Applicacion1';
+  String title = 'Application1';
 
   var _questionIndex = 0;
   var _totalScore = 0;
