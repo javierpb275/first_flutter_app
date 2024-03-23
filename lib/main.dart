@@ -13,7 +13,13 @@ void main() {
             ),
           ),
           child: const Center(
-            child: Text('Hello World!'),
+            child: Text(
+              'Hello World!',
+              style: TextStyle(
+                color: Colors.white, // Set text color to white
+                fontSize: 28, // Set font size to 28
+              ),
+            ),
           ),
         ),
       ),
