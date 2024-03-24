@@ -6,7 +6,7 @@ class GradientContainer extends StatelessWidget {
   final AlignmentGeometry endAlignment;
   final Widget child;
 
-  const GradientContainer({
+  GradientContainer({
     super.key,
     required this.colors,
     this.startAlignment = Alignment.topLeft,
@@ -14,7 +14,12 @@ class GradientContainer extends StatelessWidget {
     required this.child,
   });
 
-  static rollDice() {}
+  var activeDiceImage = 'assets/images/dice/dice-1.png';
+
+  void rollDice() {
+    activeDiceImage = 'assets/images/dice/dice-2.png';
+    print(activeDiceImage);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +36,7 @@ class GradientContainer extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              'assets/images/dice/dice-1.png',
+              activeDiceImage,
               width: 200,
             ),
             const SizedBox(
