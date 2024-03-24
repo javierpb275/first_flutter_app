@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 
 void main() {
   runApp(
-    MaterialApp(
+    const MaterialApp(
       home: Scaffold(
         body: GradientContainer(
-          colors: const [Colors.deepPurple, Color.fromARGB(255, 138, 108, 196)],
-          child: const StyledText(
+          colors: [Colors.deepPurple, Color.fromARGB(255, 138, 108, 196)],
+          child: StyledText(
             'Hello World!',
             textStyle: TextStyle(
               color: Colors.white,
