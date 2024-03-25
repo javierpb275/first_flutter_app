@@ -1,5 +1,4 @@
-import 'package:first_flutter_app/centered_button.dart';
-import 'package:first_flutter_app/centered_image.dart';
+import 'package:first_flutter_app/start_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,36 +11,20 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('QUIZ APP'),
-          titleTextStyle: const TextStyle(color: Colors.white),
-          backgroundColor: Colors.blue,
-        ),
-        body: const Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CenteredImage(
-                imageUrl: 'assets/images/quiz/quiz-logo.png',
-                imageType: ImageType.asset,
-                width: 300,
-                height: 300,
-              ),
-              SizedBox(height: 50),
-              CenteredButton(
-                text: 'Start Quiz',
-                onPressed: null,
-                width: 200,
-                height: 50,
-              ),
+        home: Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color.fromARGB(80, 12, 45, 233),
+              Color.fromARGB(215, 34, 193, 221),
             ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
+        child: const StartScreen(),
       ),
-      theme: ThemeData(
-        scaffoldBackgroundColor: Colors.blue,
-      ),
-    );
+    ));
   }
 }
