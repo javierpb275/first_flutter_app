@@ -4,12 +4,12 @@
 // utility in the flutter_test package. For example, you can send tap and scroll
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
-import 'package:first_flutter_app/main.dart';
+import 'package:first_flutter_app/quiz.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('MyApp test', (WidgetTester tester) async {
+  testWidgets('Quiz test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(const Quiz());
   });
 }
