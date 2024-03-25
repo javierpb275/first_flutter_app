@@ -1,24 +1,47 @@
-import 'package:first_flutter_app/gradient_container.dart';
-import 'package:first_flutter_app/styled_text.dart';
+import 'package:first_flutter_app/centered_button.dart';
+import 'package:first_flutter_app/centered_image.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(
-    const MaterialApp(
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
       home: Scaffold(
-        body: GradientContainer(
-          colors: [Colors.deepPurple, Color.fromARGB(255, 138, 108, 196)],
-          child: StyledText(
-            'Hello World!',
-            textStyle: TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              // Add more text style properties as needed
-            ),
+        appBar: AppBar(
+          title: const Text('QUIZ APP'),
+          titleTextStyle: const TextStyle(color: Colors.white),
+          backgroundColor: Colors.blue,
+        ),
+        body: const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CenteredImage(
+                imageUrl: 'assets/images/quiz/quiz-logo.png',
+                imageType: ImageType.asset,
+                width: 300,
+                height: 300,
+              ),
+              SizedBox(height: 50),
+              CenteredButton(
+                text: 'Start Quiz',
+                onPressed: null,
+                width: 200,
+                height: 50,
+              ),
+            ],
           ),
         ),
       ),
-    ),
-  );
+      theme: ThemeData(
+        scaffoldBackgroundColor: Colors.blue,
+      ),
+    );
+  }
 }
