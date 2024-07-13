@@ -1,4 +1,4 @@
-import 'package:first_flutter_app/answer_button.dart';
+import 'package:first_flutter_app/widgets/quiz/answer_button.dart';
 import 'package:first_flutter_app/data/questions.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
