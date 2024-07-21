@@ -1,5 +1,4 @@
 import 'package:first_flutter_app/models/expense.dart' as expense_model;
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class NewExpense extends StatefulWidget {
@@ -34,6 +33,32 @@ class _NewExpenseState extends State<NewExpense> {
     setState(() {
       _selectedDate = pickedDate;
     });
+  }
+
+  void _submitExpenseData() {
+    final enteredAmount = double.tryParse(_amountController.text);
+    final titleFieldIsEmpty = _titleController.text.trim().isEmpty;
+    final amountFieldIsInvalid = enteredAmount == null || enteredAmount <= 0;
+    final noDateSelected = _selectedDate == null;
+    if (titleFieldIsEmpty || amountFieldIsInvalid || noDateSelected) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Invalid input'),
+          content:
+              const Text('Please, make sure you fill out the form correctly.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
   }
 
   @override
@@ -132,12 +157,7 @@ class _NewExpenseState extends State<NewExpense> {
                 ),
               ),
               ElevatedButton(
-                onPressed: () {
-                  if (kDebugMode) {
-                    print('Title: ${_titleController.text}');
-                    print('Amount: ${_amountController.text}');
-                  }
-                },
+                onPressed: _submitExpenseData,
                 child: const Text(
                   'Save Expense',
                 ),
