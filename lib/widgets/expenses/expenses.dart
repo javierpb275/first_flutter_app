@@ -1,6 +1,6 @@
 import 'package:first_flutter_app/widgets/expenses/chart/chart.dart';
 import 'package:first_flutter_app/widgets/expenses_list/expenses_list.dart';
-import 'package:first_flutter_app/widgets/new_expense.dart';
+import 'package:first_flutter_app/widgets/expenses/new_expense.dart';
 import 'package:flutter/material.dart';
 import 'package:first_flutter_app/models/expense.dart';
 
