@@ -8,7 +8,7 @@ void main() {
     MaterialApp(
       darkTheme: ExpensesDarkTheme.theme,
       theme: ExpensesLightTheme.theme,
-      themeMode: ThemeMode.light,
+      themeMode: ThemeMode.dark,
       home: const Expenses(),
     ),
   );
