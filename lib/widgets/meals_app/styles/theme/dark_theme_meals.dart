@@ -9,7 +9,10 @@ class DarkThemeMeals {
         brightness: Brightness.dark,
         seedColor: const Color.fromARGB(255, 208, 55, 132),
       ),
-      textTheme: GoogleFonts.latoTextTheme(),
+      textTheme: GoogleFonts.latoTextTheme().apply(
+        bodyColor: Colors.white,
+        displayColor: Colors.white,
+      ),
     );
   }
 }
