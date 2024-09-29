@@ -1,3 +1,4 @@
+import 'package:first_flutter_app/widgets/meals_app/widgets/drawers/custom_list_title.dart';
 import 'package:flutter/material.dart';
 
 class MainDrawer extends StatelessWidget {
@@ -39,7 +40,17 @@ class MainDrawer extends StatelessWidget {
                 ),
               ],
             ),
-          )
+          ),
+          CustomListTitle(
+            icon: Icons.restaurant,
+            title: 'Meals',
+            onTap: () {},
+          ),
+          CustomListTitle(
+            icon: Icons.settings,
+            title: 'Filters',
+            onTap: () {},
+          ),
         ],
       ),
     );
