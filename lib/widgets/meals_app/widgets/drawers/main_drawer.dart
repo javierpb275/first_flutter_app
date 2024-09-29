@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 class MainDrawer extends StatelessWidget {
   const MainDrawer({
     super.key,
+    required this.onSelectScreen,
   });
+
+  final void Function(String identifier) onSelectScreen;
 
   @override
   Widget build(BuildContext context) {
@@ -44,12 +47,16 @@ class MainDrawer extends StatelessWidget {
           CustomListTitle(
             icon: Icons.restaurant,
             title: 'Meals',
-            onTap: () {},
+            onTap: () {
+              onSelectScreen('meals');
+            },
           ),
           CustomListTitle(
             icon: Icons.settings,
             title: 'Filters',
-            onTap: () {},
+            onTap: () {
+              onSelectScreen('filters');
+            },
           ),
         ],
       ),
