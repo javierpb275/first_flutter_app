@@ -50,7 +50,7 @@ class _TabsScreenState extends State<TabsScreen> {
   void _setScreen(String identifier) {
     Navigator.of(context).pop();
     if (identifier == 'filters') {
-      Navigator.of(context).pushReplacement(
+      Navigator.of(context).push(
         MaterialPageRoute(
           builder: (ctx) => const FiltersScreen(),
         ),
