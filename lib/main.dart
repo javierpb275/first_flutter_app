@@ -2,6 +2,7 @@ import 'package:first_flutter_app/app.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 Future<void> main() async {
   // Ensure that Flutter framework is fully initialized before running the app
@@ -20,5 +21,7 @@ Future<void> main() async {
   }
 
   // Run the main application widget
-  runApp(const App());
+  runApp(const ProviderScope(
+    child: App(),
+  ));
 }
