@@ -15,6 +15,7 @@ class FavoriteButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final favoriteMeals = ref.watch(favoriteMealsProvider);
     final isFavorite = favoriteMeals.contains(meal);
+
     return IconButton(
       onPressed: () {
         final wasAdded = ref

@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   // Ensure that Flutter framework is fully initialized before running the app
@@ -19,6 +20,9 @@ Future<void> main() async {
       print('Failed to set preferred orientations: $e');
     }
   }
+
+  // Initialize SharedPreferences if needed
+  await SharedPreferences.getInstance(); // Just to ensure it's ready
 
   // Run the main application widget
   runApp(const ProviderScope(
