@@ -13,6 +13,8 @@ class FavoriteButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final favoriteMeals = ref.watch(favoriteMealsProvider);
+    final isFavorite = favoriteMeals.contains(meal);
     return IconButton(
       onPressed: () {
         final wasAdded = ref
@@ -30,7 +32,9 @@ class FavoriteButton extends ConsumerWidget {
           ),
         );
       },
-      icon: const Icon(Icons.star),
+      icon: Icon(
+        isFavorite ? Icons.star : Icons.star_border,
+      ),
     );
   }
 }
