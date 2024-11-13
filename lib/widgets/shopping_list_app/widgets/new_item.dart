@@ -1,5 +1,6 @@
 import 'package:first_flutter_app/widgets/shopping_list_app/data/categories_shop.dart';
 import 'package:first_flutter_app/widgets/shopping_list_app/models/category.dart';
+import 'package:first_flutter_app/widgets/shopping_list_app/models/grocery_item.dart';
 import 'package:flutter/material.dart';
 
 class NewItem extends StatefulWidget {
@@ -21,6 +22,14 @@ class _NewItemState extends State<NewItem> {
     var success = _formKey.currentState!.validate();
     if (success) {
       _formKey.currentState!.save();
+      Navigator.of(context).pop(
+        GroceryItem(
+          id: DateTime.now().toString(),
+          name: _enteredName,
+          quantity: _enteredQuantity,
+          category: _selectedCategory,
+        ),
+      );
     }
   }
 
