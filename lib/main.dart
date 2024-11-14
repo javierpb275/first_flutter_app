@@ -2,10 +2,14 @@ import 'package:first_flutter_app/app.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
+  // Load environment variables
+  await dotenv.load(fileName: ".env");
+
   // Ensure that Flutter framework is fully initialized before running the app
   WidgetsFlutterBinding.ensureInitialized();
 

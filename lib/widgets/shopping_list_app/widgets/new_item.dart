@@ -1,3 +1,4 @@
+import 'package:first_flutter_app/libs/api_service.dart';
 import 'package:first_flutter_app/widgets/shopping_list_app/data/categories_shop.dart';
 import 'package:first_flutter_app/widgets/shopping_list_app/models/category.dart';
 import 'package:first_flutter_app/widgets/shopping_list_app/models/grocery_item.dart';
@@ -22,6 +23,20 @@ class _NewItemState extends State<NewItem> {
     var success = _formKey.currentState!.validate();
     if (success) {
       _formKey.currentState!.save();
+
+      final apiService = ApiService();
+      var res = apiService.post(
+        '/shopping-list.json',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: {
+          'name': _enteredName,
+          'quantity': _enteredQuantity,
+          'category': _selectedCategory.title,
+        },
+      );
+      print(res);
       Navigator.of(context).pop(
         GroceryItem(
           id: DateTime.now().toString(),
