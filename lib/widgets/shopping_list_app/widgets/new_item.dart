@@ -1,7 +1,6 @@
 import 'package:first_flutter_app/libs/api_service.dart';
 import 'package:first_flutter_app/widgets/shopping_list_app/data/categories_shop.dart';
 import 'package:first_flutter_app/widgets/shopping_list_app/models/category.dart';
-import 'package:first_flutter_app/widgets/shopping_list_app/models/grocery_item.dart';
 import 'package:flutter/material.dart';
 
 class NewItem extends StatefulWidget {
@@ -19,13 +18,12 @@ class _NewItemState extends State<NewItem> {
   var _enteredQuantity = 1;
   var _selectedCategory = categories[Categories.vegetables]!;
 
-  void _saveItem() {
+  void _saveItem() async {
     var success = _formKey.currentState!.validate();
     if (success) {
       _formKey.currentState!.save();
-
       final apiService = ApiService();
-      var res = apiService.post(
+      final res = await apiService.post(
         '/shopping-list.json',
         headers: {
           "Content-Type": "application/json",
@@ -37,14 +35,10 @@ class _NewItemState extends State<NewItem> {
         },
       );
       print(res);
-      Navigator.of(context).pop(
-        GroceryItem(
-          id: DateTime.now().toString(),
-          name: _enteredName,
-          quantity: _enteredQuantity,
-          category: _selectedCategory,
-        ),
-      );
+      if (!context.mounted) {
+        return;
+      }
+      Navigator.of(context).pop();
     }
   }
 
