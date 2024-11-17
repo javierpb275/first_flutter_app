@@ -39,8 +39,9 @@ class _NewItemState extends State<NewItem> {
         }
         Navigator.of(context).pop(res);
       } catch (error) {
+        String errorMessage = 'Failed to save item. Please try again.';
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save item: $error')),
+          SnackBar(content: Text(errorMessage)),
         );
       } finally {
         setState(() {

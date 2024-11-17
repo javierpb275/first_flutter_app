@@ -16,6 +16,7 @@ class _GroceryListState extends State<GroceryList> {
   final List<GroceryItem> _groceryItems = [];
   final _groceryItemService = GroceryItemService();
   var _isLoading = true;
+  String? _errorMessage;
 
   @override
   void initState() {
@@ -29,31 +30,65 @@ class _GroceryListState extends State<GroceryList> {
       setState(() {
         _groceryItems.clear();
         _groceryItems.addAll(res);
-        _isLoading = false;
+        _errorMessage = null;
       });
     } catch (e) {
-      print('Failed to load items: $e');
+      setState(() {
+        _isLoading = false;
+        _errorMessage = 'Failed to load items. Please try again later.';
+      });
+      _showSnackBar(_errorMessage!);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
   void _addItem() async {
-    final newItem = await Navigator.of(context).push<GroceryItem>(
-      MaterialPageRoute(
-        builder: (ctx) => const NewItem(),
-      ),
-    );
-    if (newItem == null) {
-      return;
+    try {
+      final newItem = await Navigator.of(context).push<GroceryItem>(
+        MaterialPageRoute(
+          builder: (ctx) => const NewItem(),
+        ),
+      );
+      if (newItem == null) {
+        return;
+      }
+      setState(() {
+        _groceryItems.add(newItem);
+        _errorMessage = null;
+      });
+    } catch (e) {
+      _showSnackBar('Failed to add item. Please try again.');
     }
-    setState(() {
-      _groceryItems.add(newItem);
-    });
   }
 
-  void _removeItem(GroceryItem item) {
+  void _removeItem(GroceryItem item) async {
+    final int index = _groceryItems.indexOf(item);
     setState(() {
-      _groceryItems.remove(item);
+      _groceryItems.removeAt(index);
     });
+    try {
+      final success = await _groceryItemService.delete(item.id);
+      if (!success) {
+        throw Exception('Deletion failed.');
+      }
+    } catch (e) {
+      setState(() {
+        _groceryItems.insert(index, item);
+      });
+      _showSnackBar('Failed to delete item. Please try again.');
+    }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 3),
+      ),
+    );
   }
 
   @override
@@ -64,6 +99,16 @@ class _GroceryListState extends State<GroceryList> {
 
     if (_isLoading) {
       content = const Center(child: CircularProgressIndicator());
+    }
+
+    if (_errorMessage != null && !_isLoading) {
+      content = Center(
+        child: Text(
+          _errorMessage!,
+          style: const TextStyle(color: Colors.red, fontSize: 16),
+          textAlign: TextAlign.center,
+        ),
+      );
     }
 
     if (_groceryItems.isNotEmpty) {
