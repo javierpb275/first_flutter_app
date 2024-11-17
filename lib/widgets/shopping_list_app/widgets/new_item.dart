@@ -1,8 +1,6 @@
-import 'package:first_flutter_app/libs/api_service.dart';
 import 'package:first_flutter_app/widgets/shopping_list_app/data/categories_shop.dart';
-import 'package:first_flutter_app/widgets/shopping_list_app/helpers/map_category.dart';
 import 'package:first_flutter_app/widgets/shopping_list_app/models/category.dart';
-import 'package:first_flutter_app/widgets/shopping_list_app/models/grocery_item.dart';
+import 'package:first_flutter_app/widgets/shopping_list_app/services/grocery_item_service.dart';
 import 'package:flutter/material.dart';
 
 class NewItem extends StatefulWidget {
@@ -16,7 +14,7 @@ class NewItem extends StatefulWidget {
 
 class _NewItemState extends State<NewItem> {
   final _formKey = GlobalKey<FormState>();
-  final _apiService = ApiService();
+  final _groceryItemService = GroceryItemService();
   var _enteredName = '';
   var _enteredQuantity = 1;
   var _selectedCategory = categories[Categories.vegetables]!;
@@ -25,26 +23,15 @@ class _NewItemState extends State<NewItem> {
     var success = _formKey.currentState!.validate();
     if (success) {
       _formKey.currentState!.save();
-      final res = await _apiService.post(
-        '/shopping-list.json',
-        body: {
-          'name': _enteredName,
-          'quantity': _enteredQuantity,
-          'category': _selectedCategory.title,
-        },
+      final res = await _groceryItemService.post(
+        name: _enteredName,
+        quantity: _enteredQuantity,
+        category: _selectedCategory,
       );
-      final category = mapCategory(res['category']);
       if (!context.mounted) {
         return;
       }
-      Navigator.of(context).pop(
-        GroceryItem(
-          id: res['id'],
-          name: res['name'],
-          quantity: res['quantity'],
-          category: category,
-        ),
-      );
+      Navigator.of(context).pop(res);
     }
   }
 
