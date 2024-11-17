@@ -1,6 +1,7 @@
 import 'package:first_flutter_app/widgets/shopping_list_app/data/categories_shop.dart';
 import 'package:first_flutter_app/widgets/shopping_list_app/models/category.dart';
 import 'package:first_flutter_app/widgets/shopping_list_app/services/grocery_item_service.dart';
+import 'package:first_flutter_app/widgets/shopping_list_app/widgets/small_loading_indicator.dart';
 import 'package:flutter/material.dart';
 
 class NewItem extends StatefulWidget {
@@ -18,20 +19,34 @@ class _NewItemState extends State<NewItem> {
   var _enteredName = '';
   var _enteredQuantity = 1;
   var _selectedCategory = categories[Categories.vegetables]!;
+  var _isSending = false;
 
   void _saveItem() async {
     var success = _formKey.currentState!.validate();
     if (success) {
       _formKey.currentState!.save();
-      final res = await _groceryItemService.post(
-        name: _enteredName,
-        quantity: _enteredQuantity,
-        category: _selectedCategory,
-      );
-      if (!context.mounted) {
-        return;
+      setState(() {
+        _isSending = true;
+      });
+      try {
+        final res = await _groceryItemService.post(
+          name: _enteredName,
+          quantity: _enteredQuantity,
+          category: _selectedCategory,
+        );
+        if (!context.mounted) {
+          return;
+        }
+        Navigator.of(context).pop(res);
+      } catch (error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to save item: $error')),
+        );
+      } finally {
+        setState(() {
+          _isSending = false;
+        });
       }
-      Navigator.of(context).pop(res);
     }
   }
 
@@ -134,15 +149,17 @@ class _NewItemState extends State<NewItem> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    onPressed: _resetForm,
+                    onPressed: _isSending ? null : _resetForm,
                     child: const Text('Reset'),
                   ),
                   const SizedBox(
                     width: 6,
                   ),
                   ElevatedButton(
-                    onPressed: _saveItem,
-                    child: const Text('Add Item'),
+                    onPressed: _isSending ? null : _saveItem,
+                    child: _isSending
+                        ? const SmallLoadingIndicator()
+                        : const Text('Add Item'),
                   ),
                 ],
               ),
