@@ -14,6 +14,7 @@ class NewItem extends StatefulWidget {
 
 class _NewItemState extends State<NewItem> {
   final _formKey = GlobalKey<FormState>();
+  final _apiService = ApiService();
   var _enteredName = '';
   var _enteredQuantity = 1;
   var _selectedCategory = categories[Categories.vegetables]!;
@@ -22,19 +23,14 @@ class _NewItemState extends State<NewItem> {
     var success = _formKey.currentState!.validate();
     if (success) {
       _formKey.currentState!.save();
-      final apiService = ApiService();
-      final res = await apiService.post(
+      await _apiService.post(
         '/shopping-list.json',
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: {
           'name': _enteredName,
           'quantity': _enteredQuantity,
           'category': _selectedCategory.title,
         },
       );
-      print(res);
       if (!context.mounted) {
         return;
       }

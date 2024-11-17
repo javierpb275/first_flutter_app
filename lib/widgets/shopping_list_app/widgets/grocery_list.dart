@@ -1,3 +1,5 @@
+import 'package:first_flutter_app/libs/api_service.dart';
+import 'package:first_flutter_app/widgets/shopping_list_app/helpers/map_category.dart';
 import 'package:first_flutter_app/widgets/shopping_list_app/models/grocery_item.dart';
 import 'package:first_flutter_app/widgets/shopping_list_app/widgets/new_item.dart';
 import 'package:flutter/material.dart';
@@ -13,19 +15,42 @@ class GroceryList extends StatefulWidget {
 
 class _GroceryListState extends State<GroceryList> {
   final List<GroceryItem> _groceryItems = [];
+  final _apiService = ApiService();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadItems();
+  }
+
+  void _loadItems() async {
+    try {
+      final res = await _apiService.getMany('/shopping-list.json');
+      final loadedItems = (res as List).map((item) {
+        final category = mapCategory(item['category']);
+        return GroceryItem(
+          id: item['id'] as String,
+          name: item['name'] as String,
+          quantity: item['quantity'] as int,
+          category: category,
+        );
+      }).toList();
+      setState(() {
+        _groceryItems.clear();
+        _groceryItems.addAll(loadedItems);
+      });
+    } catch (e) {
+      print('Failed to load items: $e');
+    }
+  }
 
   void _addItem() async {
-    final newItem = await Navigator.of(context).push<GroceryItem>(
+    await Navigator.of(context).push<GroceryItem>(
       MaterialPageRoute(
         builder: (ctx) => const NewItem(),
       ),
     );
-    if (newItem == null) {
-      return;
-    }
-    setState(() {
-      _groceryItems.add(newItem);
-    });
+    _loadItems();
   }
 
   void _removeItem(GroceryItem item) {
