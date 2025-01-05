@@ -1,4 +1,5 @@
 import 'package:first_flutter_app/widgets/places_app/models/place.dart';
+import 'package:first_flutter_app/widgets/places_app/screens/place_details_screen.dart';
 import 'package:flutter/material.dart';
 
 class PlacesList extends StatelessWidget {
@@ -28,6 +29,12 @@ class PlacesList extends StatelessWidget {
                 color: Theme.of(context).colorScheme.onSurface,
               ),
         ),
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+                builder: (ctx) => PlaceDetailsScreen(place: places[index])),
+          );
+        },
       ),
     );
   }
