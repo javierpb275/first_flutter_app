@@ -1,4 +1,5 @@
-import 'package:flutter/foundation.dart';
+import 'package:first_flutter_app/widgets/places_app/models/place.dart';
+import 'package:first_flutter_app/widgets/places_app/services/google_maps_service.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 
@@ -12,7 +13,7 @@ class LocationInput extends StatefulWidget {
 }
 
 class _LocationInputState extends State<LocationInput> {
-  Location? _pickedLocation;
+  PlaceLocation? _pickedLocation;
   var _isGettingLocation = false;
 
   void _getCurrentLocation() async {
@@ -44,14 +45,28 @@ class _LocationInputState extends State<LocationInput> {
 
     locationData = await location.getLocation();
 
+    if (locationData.latitude == null || locationData.longitude == null) {
+      return;
+    }
+
+    var gms = GoogleMapsService(
+      apiKey: 'ApiKey',
+      latitude: locationData.latitude!,
+      longitude: locationData.longitude!,
+    );
+
+    var res = await gms.get();
+
+    var address = res['results'][0]['formatted_address'] ?? 'Unknown Address';
+
     setState(() {
+      _pickedLocation = PlaceLocation(
+        address: address,
+        latitude: locationData.latitude!,
+        longitude: locationData.longitude!,
+      );
       _isGettingLocation = false;
     });
-
-    if (kDebugMode) {
-      print(locationData.latitude);
-      print(locationData.longitude);
-    }
   }
 
   @override
