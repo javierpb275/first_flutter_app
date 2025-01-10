@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -19,18 +20,27 @@ class _ImageInputState extends State<ImageInput> {
 
   void _takePicture() async {
     final imagePicker = ImagePicker();
-    final pickedImage = await imagePicker.pickImage(
-      source: ImageSource.camera,
-      maxWidth: 600,
-    );
-    if (pickedImage == null) {
-      return;
-    }
-    setState(() {
-      _selectedImage = File(pickedImage.path);
-    });
+    const ImageSource source =
+        kReleaseMode ? ImageSource.camera : ImageSource.gallery;
 
-    widget.onPickImage(_selectedImage!);
+    try {
+      final pickedImage = await imagePicker.pickImage(
+        source: source,
+        maxWidth: 600,
+      );
+      if (pickedImage == null) {
+        return;
+      }
+      setState(() {
+        _selectedImage = File(pickedImage.path);
+      });
+
+      widget.onPickImage(_selectedImage!);
+    } catch (error) {
+      if (kDebugMode) {
+        print("Error picking image: $error");
+      }
+    }
   }
 
   @override
@@ -57,9 +67,7 @@ class _ImageInputState extends State<ImageInput> {
       decoration: BoxDecoration(
         border: Border.all(
           width: 1,
-          color: Theme.of(context).colorScheme.primary.withValues(
-                alpha: 0.2,
-              ),
+          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
         ),
       ),
       height: 250,

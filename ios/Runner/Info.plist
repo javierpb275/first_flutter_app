@@ -4,10 +4,10 @@
 <dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Allow location access</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Pick your image</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Take a picture</string>
+	<string>This app requires camera access to take pictures.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app requires access to your photo library.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Use the microphone</string>
 	<key>CFBundleDevelopmentRegion</key>
