@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 
 class LocationInput extends StatefulWidget {
-  const LocationInput({super.key});
+  const LocationInput({super.key, required this.onSelectLocation});
+
+  final void Function(PlaceLocation location) onSelectLocation;
 
   @override
   State<LocationInput> createState() {
@@ -15,6 +17,9 @@ class LocationInput extends StatefulWidget {
 class _LocationInputState extends State<LocationInput> {
   PlaceLocation? _pickedLocation;
   var _isGettingLocation = false;
+  var gms = GoogleMapsService(
+    apiKey: 'ApiKey',
+  );
 
   void _getCurrentLocation() async {
     Location location = Location();
@@ -27,6 +32,7 @@ class _LocationInputState extends State<LocationInput> {
     if (!serviceEnabled) {
       serviceEnabled = await location.requestService();
       if (!serviceEnabled) {
+        _showErrorMessage('Location service is not enabled.');
         return;
       }
     }
@@ -35,6 +41,7 @@ class _LocationInputState extends State<LocationInput> {
     if (permissionGranted == PermissionStatus.denied) {
       permissionGranted = await location.requestPermission();
       if (permissionGranted != PermissionStatus.granted) {
+        _showErrorMessage('Location permission is denied.');
         return;
       }
     }
@@ -43,30 +50,42 @@ class _LocationInputState extends State<LocationInput> {
       _isGettingLocation = true;
     });
 
-    locationData = await location.getLocation();
+    try {
+      locationData = await location.getLocation();
 
-    if (locationData.latitude == null || locationData.longitude == null) {
-      return;
+      if (locationData.latitude == null || locationData.longitude == null) {
+        throw Exception('Unable to fetch location data.');
+      }
+
+      var res = await gms.getLocation(
+          locationData.latitude!, locationData.longitude!);
+
+      var address = res['results'] != null && res['results'].isNotEmpty
+          ? res['results'][0]['formatted_address']
+          : 'Unknown Address';
+
+      setState(() {
+        _pickedLocation = PlaceLocation(
+          address: address,
+          latitude: locationData.latitude!,
+          longitude: locationData.longitude!,
+        );
+        _isGettingLocation = false;
+      });
+
+      widget.onSelectLocation(_pickedLocation!);
+    } catch (error) {
+      _showErrorMessage('Failed to get location. Please try again later.');
+      setState(() {
+        _isGettingLocation = false;
+      });
     }
+  }
 
-    var gms = GoogleMapsService(
-      apiKey: 'ApiKey',
-      latitude: locationData.latitude!,
-      longitude: locationData.longitude!,
+  void _showErrorMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
     );
-
-    var res = await gms.get();
-
-    var address = res['results'][0]['formatted_address'] ?? 'Unknown Address';
-
-    setState(() {
-      _pickedLocation = PlaceLocation(
-        address: address,
-        latitude: locationData.latitude!,
-        longitude: locationData.longitude!,
-      );
-      _isGettingLocation = false;
-    });
   }
 
   @override
@@ -78,6 +97,18 @@ class _LocationInputState extends State<LocationInput> {
             color: Theme.of(context).colorScheme.onSurface,
           ),
     );
+
+    if (_pickedLocation != null) {
+      previewContent = Image.network(
+        gms.getLocationImage(
+          _pickedLocation!.latitude,
+          _pickedLocation!.longitude,
+        ),
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+      );
+    }
 
     if (_isGettingLocation) {
       previewContent = const CircularProgressIndicator();
