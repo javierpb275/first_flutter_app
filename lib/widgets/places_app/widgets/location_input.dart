@@ -1,6 +1,8 @@
 import 'package:first_flutter_app/widgets/places_app/models/place.dart';
+import 'package:first_flutter_app/widgets/places_app/screens/map_screen.dart';
 import 'package:first_flutter_app/widgets/places_app/services/google_maps_service.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 class LocationInput extends StatefulWidget {
@@ -20,6 +22,25 @@ class _LocationInputState extends State<LocationInput> {
   var gms = GoogleMapsService(
     apiKey: 'ApiKey',
   );
+
+  Future<void> _savePlace(double latitude, double longitude) async {
+    var res = await gms.getLocation(latitude, longitude);
+
+    var address = res['results'] != null && res['results'].isNotEmpty
+        ? res['results'][0]['formatted_address']
+        : 'Unknown Address';
+
+    setState(() {
+      _pickedLocation = PlaceLocation(
+        address: address,
+        latitude: latitude,
+        longitude: longitude,
+      );
+      _isGettingLocation = false;
+    });
+
+    widget.onSelectLocation(_pickedLocation!);
+  }
 
   void _getCurrentLocation() async {
     Location location = Location();
@@ -57,23 +78,7 @@ class _LocationInputState extends State<LocationInput> {
         throw Exception('Unable to fetch location data.');
       }
 
-      var res = await gms.getLocation(
-          locationData.latitude!, locationData.longitude!);
-
-      var address = res['results'] != null && res['results'].isNotEmpty
-          ? res['results'][0]['formatted_address']
-          : 'Unknown Address';
-
-      setState(() {
-        _pickedLocation = PlaceLocation(
-          address: address,
-          latitude: locationData.latitude!,
-          longitude: locationData.longitude!,
-        );
-        _isGettingLocation = false;
-      });
-
-      widget.onSelectLocation(_pickedLocation!);
+      await _savePlace(locationData.latitude!, locationData.longitude!);
     } catch (error) {
       _showErrorMessage('Failed to get location. Please try again later.');
       setState(() {
@@ -86,6 +91,20 @@ class _LocationInputState extends State<LocationInput> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
     );
+  }
+
+  void _selectOnMap() async {
+    final pickedLocation = await Navigator.of(context).push<LatLng>(
+      MaterialPageRoute(
+        builder: (ctx) => const MapScreen(),
+      ),
+    );
+
+    if (pickedLocation == null) {
+      return;
+    }
+
+    _savePlace(pickedLocation.latitude, pickedLocation.longitude);
   }
 
   @override
@@ -139,7 +158,7 @@ class _LocationInputState extends State<LocationInput> {
               label: const Text('Get Current Location'),
             ),
             TextButton.icon(
-              onPressed: () {},
+              onPressed: _selectOnMap,
               icon: const Icon(Icons.map),
               label: const Text('Select on Map'),
             ),
